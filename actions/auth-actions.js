@@ -8,6 +8,8 @@ import { hashUserPassword } from "@/lib/hash.js";
 import { createUser } from "@/lib/user";
 import { redirect } from "next/navigation";
 
+import { createAuthSession } from "@/lib/auth";
+
 export async function signup(prevState, formData) {
   const email = formData.get("email");
   const password = formData.get("password");
@@ -33,7 +35,11 @@ export async function signup(prevState, formData) {
   // pour l'implementation de l'authentification, nous utiliserons le package 'lucia auth' qui gere l'authentification et la creation de compte utilisateur. il est base sur sqlite et est facile a utiliser. pour l'installer, nous devons executer la commande suivante: npm install lucia @lucia-auth/adapter-sqlite
   const hashedPassword = hashUserPassword(password);
   try {
-    createUser(email, hashedPassword);
+    const id = createUser(email, hashedPassword);
+
+    // cree une session pour l'utilisateur avant de le rediriger vers la page de formation
+    await createAuthSession(id);
+    redirect("/training");
   } catch (error) {
     if (error.code === "SQLITE_CONSTRAINT_UNIQUE") {
       return {
@@ -44,6 +50,4 @@ export async function signup(prevState, formData) {
     }
     throw error;
   }
-
-  redirect("/training");
 }
