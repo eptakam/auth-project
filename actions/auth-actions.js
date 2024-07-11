@@ -8,7 +8,7 @@ import { hashUserPassword } from "@/lib/hash.js";
 import { createUser } from "@/lib/user";
 import { redirect } from "next/navigation";
 
-import { createAuthSession } from "@/lib/auth";
+import { createAuthSession, destroySession } from "@/lib/auth";
 import { getUserByEmail } from "@/lib/user";
 import { verifyPassword } from "@/lib/hash";
 
@@ -78,7 +78,7 @@ export async function login(prevState, formData) {
         password: "Could not authenticate you. Please check your credentials.",
       },
     };
-  }  
+  }
 
   // creer une session pour l'utilisateur avant de le rediriger vers la page de formation
   await createAuthSession(existingUser.id);
@@ -92,4 +92,14 @@ export async function auth(mode, prevState, formData) {
     return signup(prevState, formData);
   }
   return login(prevState, formData);
+}
+
+// se deconnecter.
+// mais bien avant, nous devons detruire la session de l'utilisateur dans le fichier 'lib/auth.js'
+// puis passer 'logout' en tant que valeur de l'attribut 'action' du formulaire de deconnexion dans le fichier app/(auth)/layout.js'
+export async function logout() {
+  // supprimer la session de l'utilisateur
+  await destroySession();
+  // redirect vers la page de connexion
+  redirect("/");
 }
