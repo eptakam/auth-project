@@ -29,6 +29,8 @@ export async function signup(prevState, formData) {
   // nous aurons besoin du hook 'useFormState' de 'react-dom' pour afficher ces erreurs a l'utilisateur (sur la page ou se trouve le formulaire de signup auth-form.js)
 
   // store it in the database (create a new user). before we can do that, we need to hash the password 'lib/hash.js'
+
+  // pour l'implementation de l'authentification, nous utiliserons le package 'lucia auth' qui gere l'authentification et la creation de compte utilisateur. il est base sur sqlite et est facile a utiliser. pour l'installer, nous devons executer la commande suivante: npm install lucia @lucia-auth/adapter-sqlite
   const hashedPassword = hashUserPassword(password);
   try {
     createUser(email, hashedPassword);
