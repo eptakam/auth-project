@@ -14,11 +14,13 @@
 
 import Link from "next/link";
 import { useFormState } from "react-dom";
-import { signup } from "@/actions/auth-actions";
+import { auth, signup } from "@/actions/auth-actions";
 
 export default function AuthForm({ mode }) {
   // mode peut etre 'login' ou 'signup'
-  const [formState, formAction] = useFormState(signup, {});
+
+  // pour passer le mode (login ou signup) au 'server action' 'auth', nous utilisons la methode .bind() qui est une fonction JS premettant de preconfigurer une fonction en lui donnant la valeur qu'elle doit avoir lorsqu'elle est appelee. ici nous voulons que le 'server action' 'auth' ait le mode (login ou signup) au moment ou il sera appele (deuxieme argument de la methode .bind())
+  const [formState, formAction] = useFormState(auth.bind(null, mode), {});
   return (
     <form id="auth-form" action={formAction}>
       <div>

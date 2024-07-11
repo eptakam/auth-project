@@ -9,6 +9,8 @@ import { createUser } from "@/lib/user";
 import { redirect } from "next/navigation";
 
 import { createAuthSession } from "@/lib/auth";
+import { getUserByEmail } from "@/lib/user";
+import { verifyPassword } from "@/lib/hash";
 
 export async function signup(prevState, formData) {
   const email = formData.get("email");
@@ -63,7 +65,7 @@ export async function login(prevState, formData) {
   if (!existingUser) {
     return {
       errors: {
-        email: "Your email is incorrect.",
+        email: "Could not authenticate you. Please check your credentials.",
       },
     };
   }
@@ -73,7 +75,7 @@ export async function login(prevState, formData) {
   if (!isValidPassword) {
     return {
       errors: {
-        password: "Your password is incorrect.",
+        password: "Could not authenticate you. Please check your credentials.",
       },
     };
   }  
@@ -81,4 +83,13 @@ export async function login(prevState, formData) {
   // creer une session pour l'utilisateur avant de le rediriger vers la page de formation
   await createAuthSession(existingUser.id);
   redirect("/training");
+}
+
+// nous voulons passer au composant 'AuthForm' les actions dependant du mode. pour cela, nous creerons un troisieme 'server action' qui prendra en parametre le mode et retournera l'action appropriee
+
+export async function auth(mode, prevState, formData) {
+  if (mode === "signup") {
+    return signup(prevState, formData);
+  }
+  return login(prevState, formData);
 }
