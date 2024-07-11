@@ -37,7 +37,7 @@ export async function signup(prevState, formData) {
   try {
     const id = createUser(email, hashedPassword);
 
-    // cree une session pour l'utilisateur avant de le rediriger vers la page de formation
+    // creer une session pour l'utilisateur avant de le rediriger vers la page de formation
     await createAuthSession(id);
     redirect("/training");
   } catch (error) {
