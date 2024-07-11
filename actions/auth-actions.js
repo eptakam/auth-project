@@ -4,6 +4,9 @@
 
 'use server';
 
+import { hashUserPassword } from '@/lib/hash.js';
+import { createUser } from '@/lib/user';
+
 export async function signup(prevState, formData) {
     const email = formData.get('email');
     const password = formData.get('password');
@@ -24,6 +27,8 @@ export async function signup(prevState, formData) {
 
     // nous aurons besoin du hook 'useFormState' de 'react-dom' pour afficher ces erreurs a l'utilisateur (sur la page ou se trouve le formulaire de signup auth-form.js)
 
-    // store it in the database (create a new user)
+    // store it in the database (create a new user). before we can do that, we need to hash the password 'lib/hash.js'
+    const hashedPassword = hashUserPassword(password);
+    createUser(email, hashedPassword);
 }
 

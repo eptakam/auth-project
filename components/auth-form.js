@@ -16,7 +16,8 @@ export default function AuthForm() {
         <input type="email" name="email" id="email" />
         {/* afficher les erreurs dues a l'email en dessous du champ de saisie */}
         {formState.errors &&
-        // Object.keys() : convertit l'objet passe en argument en tableau de clés
+        // errors represente les cles de l'objet errors du 'server actions' dans le fichier auth-actions.js
+        // Object.keys() : convertit l'objet passe en argument en tableau de clés        
           Object.keys(formState.errors)
             .filter((error) => error === "email")
             .map((error) => (
