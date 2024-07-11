@@ -51,3 +51,34 @@ export async function signup(prevState, formData) {
     throw error;
   }
 }
+
+// se connecter si l'utilisateur a deja un compte
+export async function login(prevState, formData) {
+  const email = formData.get("email");
+  const password = formData.get("password");
+
+  // verifier si l'utilisateur existe dans la BD
+  const existingUser = await getUserByEmail(email);
+
+  if (!existingUser) {
+    return {
+      errors: {
+        email: "Your email is incorrect.",
+      },
+    };
+  }
+
+  // verifier si le mot de passe est correct
+  const isValidPassword = verifyPassword(existingUser.password, password);
+  if (!isValidPassword) {
+    return {
+      errors: {
+        password: "Your password is incorrect.",
+      },
+    };
+  }  
+
+  // creer une session pour l'utilisateur avant de le rediriger vers la page de formation
+  await createAuthSession(existingUser.id);
+  redirect("/training");
+}
